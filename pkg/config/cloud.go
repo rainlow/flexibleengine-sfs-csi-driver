@@ -30,6 +30,7 @@ type CloudCredentials struct {
 		AccessKey	string `gcfg:"access-key"`
 		SecretKey	string `gcfg:"secret-key"`
 		Region		string `gcfg:"region"`
+		ProjectName string `gcfg:"project-name`
 		AuthURL		string `gcfg:"auth-url"`
 	}
 
@@ -55,7 +56,8 @@ func (c *CloudCredentials) newCloudClient() error {
 		IdentityEndpoint: c.Global.AuthURL,
 		AccessKey:        c.Global.AccessKey,
 		SecretKey:        c.Global.SecretKey,
-		ProjectName:      c.Global.Region,
+		Region:           c.Global.Region,
+		ProjectName:      c.Global.ProjectName,
 	}
 
 	client, err := openstack.NewClient(ao.IdentityEndpoint)

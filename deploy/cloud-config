@@ -3,6 +3,7 @@ auth-url=https://iam.eu-west-0.prod-cloud-ocb.orange-business.com/v3
 access-key=REPLACE-WITH-YOUR-AK
 secret-key=REPLACE-WITH-YOUR-SK
 region=eu-west-0
+project-name=eu-west-0_test
 
 [Vpc]
 #The VPC where your cluster resides
