@@ -1,6 +1,6 @@
 FROM centos:7.6.1810
-LABEL maintainers="Huawei Cloud Authors"
-LABEL description="Huawei Cloud SFS CSI Plugin"
+LABEL maintainers="Dafu SHI"
+LABEL description="Huawei Cloud SFS CSI Plugin compatible with Flexible Engine"
 
 RUN yum -y install nfs-utils && yum -y install epel-release && yum -y install jq && yum clean all
 
