@@ -1,4 +1,4 @@
-module github.com/huaweicloud/huaweicloud-csi-driver
+module github.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver
 
 go 1.12
 
