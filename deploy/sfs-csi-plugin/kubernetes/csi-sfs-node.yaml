@@ -51,7 +51,7 @@ spec:
             - name: registration-dir
               mountPath: /registration
         - name: sfs
-          image: docker.io/zhenguo/sfs-csi-plugin:latest
+          image: registry.eu-west-0.prod-cloud-ocb.orange-business.com/dafurepo/sfs-csi-plugin:v1
           args:
             - "--v=2"
             - "--logtostderr"
