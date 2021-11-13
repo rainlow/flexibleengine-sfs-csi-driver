@@ -23,8 +23,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/huaweicloud/huaweicloud-csi-driver/pkg/config"
-	"github.com/huaweicloud/huaweicloud-csi-driver/pkg/sfs"
+	"github.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver/pkg/config"
+	"github.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver/pkg/sfs"
 	"k8s.io/klog"
 )
 
