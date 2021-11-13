@@ -48,7 +48,7 @@ spec:
             - mountPath: /csi
               name: socket-dir
         - name: sfs-csi-plugin
-          image: docker.io/dafushi/csi-plugin:v1
+          image: docker.io/dafushi/csi-plugin:v2
           args:
             - "--v=2"
             - "--logtostderr"

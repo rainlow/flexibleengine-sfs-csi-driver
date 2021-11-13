@@ -51,7 +51,7 @@ spec:
             - name: registration-dir
               mountPath: /registration
         - name: sfs
-          image: docker.io/dafushi/csi-plugin:v1
+          image: docker.io/dafushi/csi-plugin:v2
           args:
             - "--v=2"
             - "--logtostderr"
