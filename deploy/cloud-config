@@ -4,6 +4,7 @@ access-key=REPLACE-WITH-YOUR-AK
 secret-key=REPLACE-WITH-YOUR-SK
 region=eu-west-0
 project-name=eu-west-0_test
+project-id=245892c6186b48f285391f3f2223660a
 
 [Vpc]
 #The VPC where your cluster resides
