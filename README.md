@@ -1,5 +1,5 @@
 # SFS CSI Driver for Kubernetes
-Huawei Cloud SFS Container Storage Interface (CSI) Plugin `sfs.csi.huaweicloud.com`
+SFS Container Storage Interface (CSI) Plugin `sfs.csi.huaweicloud.com`
 
 ### Prerequisite
  - The driver initialization depends on a [cloud config file](./deploy/cloud-config). Make sure it's in `/etc/sfs/cloud-config` on your node.
