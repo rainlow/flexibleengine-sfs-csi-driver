@@ -7,19 +7,19 @@ Huawei Cloud SFS Container Storage Interface (CSI) Plugin `sfs.csi.huaweicloud.c
 ### Install SFS CSI driver
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/huaweicloud/huaweicloud-csi-driver/master/deploy/sfs-csi-plugin/kubernetes/rbac-csi-sfs-controller.yaml
-kubectl apply -f https://raw.githubusercontent.com/huaweicloud/huaweicloud-csi-driver/master/deploy/sfs-csi-plugin/kubernetes/rbac-csi-sfs-node.yaml
-kubectl apply -f https://raw.githubusercontent.com/huaweicloud/huaweicloud-csi-driver/master/deploy/sfs-csi-plugin/kubernetes/csi-sfs-controller.yaml
-kubectl apply -f https://raw.githubusercontent.com/huaweicloud/huaweicloud-csi-driver/master/deploy/sfs-csi-plugin/kubernetes/csi-sfs-node.yaml
-kubectl apply -f https://raw.githubusercontent.com/huaweicloud/huaweicloud-csi-driver/master/deploy/sfs-csi-plugin/kubernetes/csi-sfs-driver.yaml
+kubectl apply -f https://raw.githubusercontent.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver/master/deploy/sfs-csi-plugin/kubernetes/rbac-csi-sfs-controller.yaml
+kubectl apply -f https://raw.githubusercontent.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver/master/deploy/sfs-csi-plugin/kubernetes/rbac-csi-sfs-node.yaml
+kubectl apply -f https://raw.githubusercontent.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver/master/deploy/sfs-csi-plugin/kubernetes/csi-sfs-controller.yaml
+kubectl apply -f https://raw.githubusercontent.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver/master/deploy/sfs-csi-plugin/kubernetes/csi-sfs-node.yaml
+kubectl apply -f https://raw.githubusercontent.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver/master/deploy/sfs-csi-plugin/kubernetes/csi-sfs-driver.yaml
 ```
 
 ### Examples
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/huaweicloud/huaweicloud-csi-driver/master/examples/sfs-csi-plugin/kubernetes/sc.yaml
-kubectl apply -f https://raw.githubusercontent.com/huaweicloud/huaweicloud-csi-driver/master/examples/sfs-csi-plugin/kubernetes/pvc.yaml
-kubectl apply -f https://raw.githubusercontent.com/huaweicloud/huaweicloud-csi-driver/master/examples/sfs-csi-plugin/kubernetes/pod.yaml
+kubectl apply -f https://raw.githubusercontent.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver/master/examples/sfs-csi-plugin/kubernetes/sc.yaml
+kubectl apply -f https://raw.githubusercontent.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver/master/examples/sfs-csi-plugin/kubernetes/pvc.yaml
+kubectl apply -f https://raw.githubusercontent.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver/master/examples/sfs-csi-plugin/kubernetes/pod.yaml
 ```
 
 ### Links
