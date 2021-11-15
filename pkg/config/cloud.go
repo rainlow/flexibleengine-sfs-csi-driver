@@ -30,8 +30,8 @@ type CloudCredentials struct {
 		AccessKey	string `gcfg:"access-key"`
 		SecretKey	string `gcfg:"secret-key"`
 		Region		string `gcfg:"region"`
-		ProjectName string `gcfg:"project-name`
-		ProjectId   string `gcfg:"project-id`
+		ProjectName     string `gcfg:"project-name"`
+		ProjectId       string `gcfg:"project-id"`
 		AuthURL		string `gcfg:"auth-url"`
 	}
 
