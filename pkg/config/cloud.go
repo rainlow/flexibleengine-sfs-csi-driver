@@ -87,7 +87,6 @@ func (c *CloudCredentials) newCloudClient() error {
 	}
 
 	c.CloudClient = client
-	c.CloudClient.ProjectID = c.Global.ProjectId
 
 	return nil
 }
