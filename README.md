@@ -1,5 +1,5 @@
 # SFS CSI Driver for Kubernetes
-SFS Container Storage Interface (CSI) Plugin `sfs.csi.huaweicloud.com`
+SFS Container Storage Interface (CSI) Plugin makes it possible to use [SFS](https://docs.prod-cloud-ocb.orange-business.com/en-us/sfs/index.html) with your self-built Kubernetes cluster
 
 ### Prerequisite
  - The driver initialization depends on a [cloud config file](./deploy/cloud-config). Make sure it's in `/etc/sfs/cloud-config` on your node.
