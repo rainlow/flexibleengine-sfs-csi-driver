@@ -32,6 +32,8 @@ type CloudCredentials struct {
 		Region      string `gcfg:"region"`
 		ProjectName string `gcfg:"project-name"`
 		ProjectId   string `gcfg:"project-id"`
+		Password    string `gcfg:"password"`
+		Username    string `gcfg:"username"`
 		AuthURL     string `gcfg:"auth-url"`
 	}
 
