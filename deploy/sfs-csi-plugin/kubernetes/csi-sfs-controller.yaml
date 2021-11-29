@@ -49,6 +49,7 @@ spec:
               name: socket-dir
         - name: sfs-csi-plugin
           image: registry.eu-west-0.prod-cloud-ocb.orange-business.com/official/sfs-csi-plugin:v1.2.2
+
           args:
             - "--v=2"
             - "--logtostderr"
