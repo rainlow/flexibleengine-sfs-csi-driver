@@ -27,19 +27,19 @@ import (
 // CloudCredentials define
 type CloudCredentials struct {
 	Global struct {
-		AccessKey	string `gcfg:"access-key"`
-		SecretKey	string `gcfg:"secret-key"`
-		Region		string `gcfg:"region"`
-		ProjectName     string `gcfg:"project-name"`
-		ProjectId       string `gcfg:"project-id"`
-		AuthURL		string `gcfg:"auth-url"`
+		AccessKey   string `gcfg:"access-key"`
+		SecretKey   string `gcfg:"secret-key"`
+		Region      string `gcfg:"region"`
+		ProjectName string `gcfg:"project-name"`
+		ProjectId   string `gcfg:"project-id"`
+		AuthURL     string `gcfg:"auth-url"`
 	}
 
 	Vpc struct {
-		Id	string `gcfg:"id"`
+		Id string `gcfg:"id"`
 	}
 
-	CloudClient     *golangsdk.ProviderClient
+	CloudClient *golangsdk.ProviderClient
 }
 
 // Validate CloudCredentials
