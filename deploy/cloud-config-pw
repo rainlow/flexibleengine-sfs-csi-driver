@@ -1,0 +1,13 @@
+[Global]
+auth-url=https://iam.eu-west-0.prod-cloud-ocb.orange-business.com/v3
+region=eu-west-0
+#Please write your project id in tenant-id
+tenant-id=16812e5f4aef455c8eb0161c1e6a56c2
+domain-name=OCB000XXXX
+password=REPLACE-WITH-YOUR-PASSWORD
+username=REPLACE-WITH-YOUR-USERNAME
+
+
+[Vpc]
+#The VPC where your cluster resides
+id=799e3102-5493-4008-a354-49b28b61c5d5
