@@ -37,6 +37,7 @@ type CloudCredentials struct {
 		AuthURL     string `gcfg:"auth-url"`
 		DomainID    string `gcfg:"domain-id"`
 		DomainName  string `gcfg:"domain-name"`
+		TenantID    string `gcfg:"tenant-id"`
 	}
 
 	Vpc struct {
@@ -96,6 +97,7 @@ func (c *CloudCredentials) newCloudClient() error {
 			DomainName:       c.Global.DomainName,
 			Username:         c.Global.Username,
 			Password:         c.Global.Password,
+			TenantID:         c.Global.TenantID,
 		}
 		client, err := openstack.NewClient(pao.IdentityEndpoint)
 		if err != nil {
