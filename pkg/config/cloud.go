@@ -32,7 +32,12 @@ type CloudCredentials struct {
 		Region      string `gcfg:"region"`
 		ProjectName string `gcfg:"project-name"`
 		ProjectId   string `gcfg:"project-id"`
+		Password    string `gcfg:"password"`
+		Username    string `gcfg:"username"`
 		AuthURL     string `gcfg:"auth-url"`
+		DomainID    string `gcfg:"domain-id"`
+		DomainName  string `gcfg:"domain-name"`
+		TenantID    string `gcfg:"tenant-id"`
 	}
 
 	Vpc struct {
@@ -53,40 +58,71 @@ func (c *CloudCredentials) Validate() error {
 
 // newCloudClient returns new cloud client
 func (c *CloudCredentials) newCloudClient() error {
-	ao := golangsdk.AKSKAuthOptions{
-		IdentityEndpoint: c.Global.AuthURL,
-		AccessKey:        c.Global.AccessKey,
-		SecretKey:        c.Global.SecretKey,
-		Region:           c.Global.Region,
-		ProjectName:      c.Global.ProjectName,
-		ProjectId:        c.Global.ProjectId,
-	}
+	if c.Global.AccessKey != "" {
+		ao := golangsdk.AKSKAuthOptions{
+			IdentityEndpoint: c.Global.AuthURL,
+			AccessKey:        c.Global.AccessKey,
+			SecretKey:        c.Global.SecretKey,
+			Region:           c.Global.Region,
+			ProjectName:      c.Global.ProjectName,
+			ProjectId:        c.Global.ProjectId,
+		}
+		client, err := openstack.NewClient(ao.IdentityEndpoint)
+		if err != nil {
+			return err
+		}
+		var osDebug bool
+		if os.Getenv("OS_DEBUG") != "" {
+			osDebug = true
+		}
 
-	client, err := openstack.NewClient(ao.IdentityEndpoint)
-	if err != nil {
-		return err
-	}
+		transport := &http.Transport{Proxy: http.ProxyFromEnvironment}
+		client.HTTPClient = http.Client{
+			Transport: &LogRoundTripper{
+				Rt:      transport,
+				OsDebug: osDebug,
+			},
+		}
 
-	// if OS_DEBUG is set, log the requests and responses
-	var osDebug bool
-	if os.Getenv("OS_DEBUG") != "" {
-		osDebug = true
-	}
+		err = openstack.Authenticate(client, ao)
+		if err != nil {
+			return err
+		}
 
-	transport := &http.Transport{Proxy: http.ProxyFromEnvironment}
-	client.HTTPClient = http.Client{
-		Transport: &LogRoundTripper{
-			Rt:      transport,
-			OsDebug: osDebug,
-		},
-	}
+		c.CloudClient = client
+	} else if c.Global.Password != "" {
+		pao := golangsdk.AuthOptions{
+			IdentityEndpoint: c.Global.AuthURL,
+			DomainID:         c.Global.DomainID,
+			DomainName:       c.Global.DomainName,
+			Username:         c.Global.Username,
+			Password:         c.Global.Password,
+			TenantID:         c.Global.TenantID,
+		}
+		client, err := openstack.NewClient(pao.IdentityEndpoint)
+		if err != nil {
+			return err
+		}
+		var osDebug bool
+		if os.Getenv("OS_DEBUG") != "" {
+			osDebug = true
+		}
 
-	err = openstack.Authenticate(client, ao)
-	if err != nil {
-		return err
-	}
+		transport := &http.Transport{Proxy: http.ProxyFromEnvironment}
+		client.HTTPClient = http.Client{
+			Transport: &LogRoundTripper{
+				Rt:      transport,
+				OsDebug: osDebug,
+			},
+		}
 
-	c.CloudClient = client
+		err = openstack.Authenticate(client, pao)
+		if err != nil {
+			return err
+		}
+
+		c.CloudClient = client
+	}
 
 	return nil
 }
