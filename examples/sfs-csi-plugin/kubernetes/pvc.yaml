@@ -7,5 +7,6 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 10G
+     #For CSI you need to use Gi unit but storage request in SFS will be the same number specified in GB.
+      storage: 10Gi
   storageClassName: sfs.csi.huaweicloud.com 
