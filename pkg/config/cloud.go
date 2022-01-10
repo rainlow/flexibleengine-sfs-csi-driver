@@ -129,6 +129,12 @@ func (c *CloudCredentials) newCloudClient() error {
 
 // SFSV2Client return sfs v2 client
 func (c *CloudCredentials) SFSV2Client() (*golangsdk.ServiceClient, error) {
+	
+	//err := c.Validate()
+	//if err != nil {
+	//	return nil, err
+	//}
+	
 	return openstack.NewHwSFSV2(c.CloudClient, golangsdk.EndpointOpts{
 		Region:       c.Global.Region,
 		Availability: golangsdk.AvailabilityPublic,
