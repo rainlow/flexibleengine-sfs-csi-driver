@@ -47,7 +47,7 @@ spec:
             - mountPath: /csi
               name: socket-dir
         - name: sfs-csi-plugin
-          image: registry.eu-west-0.prod-cloud-ocb.orange-business.com/official/sfs-csi-plugin:v1.3
+          image: registry.eu-west-0.prod-cloud-ocb.orange-business.com/official/sfs-csi-plugin:v1.3.1
           args:
             - "--v=2"
             - "--logtostderr"
