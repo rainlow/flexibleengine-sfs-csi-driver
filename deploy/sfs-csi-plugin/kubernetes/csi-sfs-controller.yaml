@@ -29,6 +29,9 @@ spec:
             - "-v=5"
             - "--csi-address=$(ADDRESS)"
             - "--leader-election"
+            - "--timeout=300s"
+            - "--retry-interval-start=20s"
+            - "--retry-interval-max=60s"
           env:
             - name: ADDRESS
               value: /csi/csi.sock
@@ -40,6 +43,9 @@ spec:
           args:
             - "-v=5"
             - "--csi-address=$(ADDRESS)"
+            - "--timeout=300s"
+            - "--retry-interval-start=20s"
+            - "--retry-interval-max=60s"
           env:
             - name: ADDRESS
               value: /csi/csi.sock
@@ -47,7 +53,7 @@ spec:
             - mountPath: /csi
               name: socket-dir
         - name: sfs-csi-plugin
-          image: registry.eu-west-0.prod-cloud-ocb.orange-business.com/official/sfs-csi-plugin:v1.3.1
+          image: registry.eu-west-0.prod-cloud-ocb.orange-business.com/official/sfs-csi-plugin:v1.3.2
           args:
             - "--v=2"
             - "--logtostderr"

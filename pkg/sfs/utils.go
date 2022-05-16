@@ -55,7 +55,7 @@ func NewIdentityServer(d *SfsDriver) *identityServer {
 
 func NewNodeServer(d *SfsDriver) *nodeServer {
 	return &nodeServer{
-		Driver:   d,
+		Driver: d,
 	}
 }
 
@@ -103,11 +103,11 @@ func validateCreateVolumeRequest(req *csi.CreateVolumeRequest) error {
 	}
 
 	/*
-	for _, cap := range reqCaps {
-		if cap.GetBlock() != nil {
-			return errors.New("block access type not allowed")
+		for _, cap := range reqCaps {
+			if cap.GetBlock() != nil {
+				return errors.New("block access type not allowed")
+			}
 		}
-	}
 	*/
 
 	return nil
