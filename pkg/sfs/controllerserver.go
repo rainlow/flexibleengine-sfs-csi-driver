@@ -18,6 +18,7 @@ package sfs
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/huaweicloud/golangsdk"
@@ -34,45 +35,50 @@ type controllerServer struct {
 }
 
 func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*csi.CreateVolumeResponse, error) {
+	startTime := time.Now().UnixMilli()
 	klog.V(2).Infof("CreateVolume called with request %v", *req)
 	if err := validateCreateVolumeRequest(req); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	client, err := cs.Driver.cloud.SFSV2Client()
-    if err != nil {
-		klog.V(3).Infof("Failed to create SFS v2 client: %v", err)
+	if err != nil {
+		klog.V(2).Infof("Failed to create SFS v2 client: %v", err)
 		return nil, status.Error(codes.Internal, err.Error())
-    }
+	}
 
 	requestedSize := req.GetCapacityRange().GetRequiredBytes()
-    if requestedSize == 0 {
-        // At least 1GiB
-        requestedSize = 1 * bytesInGiB
-    }
+	if requestedSize == 0 {
+		// At least 1GiB
+		requestedSize = 1 * bytesInGiB
+	}
 
-    sizeInGiB := bytesToGiB(requestedSize)
+	sizeInGiB := bytesToGiB(requestedSize)
 
 	// Creating a share
 	createOpts := shares.CreateOpts{
-        ShareProto: cs.Driver.shareProto,
-        Size:       sizeInGiB,
-        Name:       req.GetName(),
-    }
+		ShareProto: cs.Driver.shareProto,
+		Size:       sizeInGiB,
+		Name:       req.GetName(),
+	}
 
-    share, err := createShare(client, &createOpts)
+	share, err := createShare(client, &createOpts)
 	if err != nil {
-		klog.V(3).Infof("Failed to create SFS volume: %v", err)
+		klog.V(2).Infof("Failed to create SFS volume %v: %v", *req, err)
 		return nil, status.Error(codes.Internal, err.Error())
-    }
+	}
 
 	// Grant access to the share
-	klog.V(5).Infof("Creating an access ruleto VPC %s", cs.Driver.cloud.Vpc.Id)
-    if err := grantAccess(client, share.ID, cs.Driver.cloud.Vpc.Id); err != nil {
-		klog.V(3).Infof("Failed to create access rule for share: %v", err)
+	ruleStartTime := time.Now().UnixMilli()
+	klog.V(2).Infof("Share: %v(ID: %v) creating an access ruleto VPC %s",
+		share.Name, share.ID, cs.Driver.cloud.Vpc.Id)
+	if err := grantAccess(client, share.ID, cs.Driver.cloud.Vpc.Id); err != nil {
+		klog.V(2).Infof("%v(ID: %v) Failed to create access rule for share: %v", share.Name, share.ID, err)
 		return nil, status.Error(codes.Internal, err.Error())
-    }
+	}
 
+	klog.V(2).Infof("Volume created for request %v, time used: %v (rule: %v) ms, VolumeId: %s, contentSource: %v, CapacityBytes: %v",
+		*req, time.Now().UnixMilli()-startTime, time.Now().UnixMilli()-ruleStartTime, share.ID, req.GetVolumeContentSource(), time.Now().UnixMilli())
 	return &csi.CreateVolumeResponse{
 		Volume: &csi.Volume{
 			VolumeId:      share.ID,
@@ -91,10 +97,10 @@ func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVol
 	}
 
 	client, err := cs.Driver.cloud.SFSV2Client()
-    if err != nil {
+	if err != nil {
 		klog.V(3).Infof("Failed to create SFS v2 client: %v", err)
 		return nil, status.Error(codes.Internal, err.Error())
-    }
+	}
 	err = deleteShare(client, volID)
 	if err != nil {
 		klog.V(3).Infof("Failed to DeleteVolume: %v", err)
@@ -159,10 +165,10 @@ func (cs *controllerServer) ValidateVolumeCapabilities(ctx context.Context, req 
 	}
 
 	client, err := cs.Driver.cloud.SFSV2Client()
-    if err != nil {
+	if err != nil {
 		klog.V(3).Infof("ValidateVolumeCapabilities Failed to create SFS v2 client: %v", err)
 		return nil, status.Error(codes.Internal, err.Error())
-    }
+	}
 
 	_, err = getShare(client, volumeID)
 	if err != nil {
@@ -189,6 +195,7 @@ func (cs *controllerServer) GetCapacity(ctx context.Context, req *csi.GetCapacit
 func (cs *controllerServer) ControllerExpandVolume(ctx context.Context, req *csi.ControllerExpandVolumeRequest) (*csi.ControllerExpandVolumeResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "")
 }
+
 /*
 func (cs *controllerServer) ControllerExpandVolume(ctx context.Context, req *csi.ControllerExpandVolumeRequest) (*csi.ControllerExpandVolumeResponse, error) {
 	klog.V(4).Infof("ControllerExpandVolume: called with args %+v", *req)

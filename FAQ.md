@@ -14,3 +14,6 @@ They might be multiple reasons:
 - Re-install SFS CSI driver from Flexible Engine Github. Be sure to Uninstall existing one first. 
 - Check if you specified the right **project & project name** on [cloud-config](https://github.com/huaweicloud/huaweicloud-csi-driver/blob/master/deploy/cloud-config) file
 
+### **Q:** Too many shares are created on SFS console ?
+- Check if you're using version 1.3.2 or higher
+- Be sure to add timeout & retry insterval parameters in the csi-sfs-controller.yaml

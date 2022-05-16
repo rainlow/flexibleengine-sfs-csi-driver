@@ -20,15 +20,15 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver/pkg/config"
+	"github.com/container-storage-interface/spec/lib/go/csi"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/klog"
 )
 
 const (
-	driverName  = "sfs.csi.huaweicloud.com"
+	driverName = "sfs.csi.huaweicloud.com"
 )
 
 var (
@@ -36,12 +36,12 @@ var (
 )
 
 type SfsDriver struct {
-	name        string
-	nodeID      string
-	version     string
-	endpoint    string
-	shareProto  string
-	cloud       config.CloudCredentials
+	name       string
+	nodeID     string
+	version    string
+	endpoint   string
+	shareProto string
+	cloud      config.CloudCredentials
 
 	ids *identityServer
 	cs  *controllerServer
@@ -60,7 +60,7 @@ func NewDriver(nodeID, endpoint, shareProto string, cloud config.CloudCredential
 	d.nodeID = nodeID
 	d.version = version
 	d.endpoint = endpoint
-    d.shareProto = strings.ToUpper(shareProto)
+	d.shareProto = strings.ToUpper(shareProto)
 	d.cloud = cloud
 
 	d.AddControllerServiceCapabilities(
