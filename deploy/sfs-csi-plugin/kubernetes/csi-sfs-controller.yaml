@@ -13,6 +13,8 @@ spec:
       labels:
         app: csi-sfs-controller
     spec:
+      hostNetwork: true # Needed to mount nfs to create dir
+      dnsPolicy: ClusterFirstWithHostNet # Check the available values (Default, ClusterFirstWithHostNet, ClusterFirst,..)
       serviceAccountName: csi-sfs-controller-sa
       nodeSelector:
         kubernetes.io/os: linux

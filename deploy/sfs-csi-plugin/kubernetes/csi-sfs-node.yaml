@@ -13,6 +13,8 @@ spec:
       labels:
         app: csi-sfs-node
     spec:
+      hostNetwork: true # Original connection would be broken without hostNetwork setting
+      dnsPolicy: ClusterFirstWithHostNet # Check the available values (Default, ClusterFirstWithHostNet, ClusterFirst,..)
       serviceAccountName: csi-sfs-node-sa
       nodeSelector:
         kubernetes.io/os: linux
