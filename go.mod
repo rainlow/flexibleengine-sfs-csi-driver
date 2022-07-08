@@ -1,4 +1,4 @@
-module github.com/FlexibleEngineCloud/flexibleengine-sfs-csi-driver
+module github.com/rainlow/flexibleengine-sfs-csi-driver
 
 go 1.12
 
@@ -14,7 +14,6 @@ require (
 	golang.org/x/net v0.0.0-20191004110552-13f9640d40b9
 	golang.org/x/sys v0.0.0-20191022100944-742c48ecaeb7 // indirect
 	golang.org/x/text v0.3.2 // indirect
-	google.golang.org/appengine v1.4.0 // indirect
 	google.golang.org/genproto v0.0.0-20190418145605-e7d98fc518a7 // indirect
 	google.golang.org/grpc v1.21.0
 	gopkg.in/gcfg.v1 v1.2.3
