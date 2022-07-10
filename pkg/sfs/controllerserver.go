@@ -37,6 +37,7 @@ type controllerServer struct {
 func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*csi.CreateVolumeResponse, error) {
 	startTime := time.Now().UnixMilli()
 	klog.V(2).Infof("CreateVolume called with request %v", *req)
+	fmt.Printf("CreateVolume called with request %v", *req)
 	if err := validateCreateVolumeRequest(req); err != nil {
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
@@ -79,6 +80,10 @@ func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVol
 
 	klog.V(2).Infof("Volume created for request %v, time used: %v (rule: %v) ms, VolumeId: %s, contentSource: %v, CapacityBytes: %v",
 		*req, time.Now().UnixMilli()-startTime, time.Now().UnixMilli()-ruleStartTime, share.ID, req.GetVolumeContentSource(), time.Now().UnixMilli())
+
+	fmt.Printf("Volume created for request %v, time used: %v (rule: %v) ms, VolumeId: %s, contentSource: %v, CapacityBytes: %v",
+		*req, time.Now().UnixMilli()-startTime, time.Now().UnixMilli()-ruleStartTime, share.ID, req.GetVolumeContentSource(), time.Now().UnixMilli())
+
 	return &csi.CreateVolumeResponse{
 		Volume: &csi.Volume{
 			VolumeId:      share.ID,
@@ -90,6 +95,7 @@ func (cs *controllerServer) CreateVolume(ctx context.Context, req *csi.CreateVol
 
 func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVolumeRequest) (*csi.DeleteVolumeResponse, error) {
 	klog.V(2).Infof("DeleteVolume called with request %v", *req)
+	fmt.Printf("DeleteVolume called with request %v", *req)
 
 	volID := req.GetVolumeId()
 	if len(volID) == 0 {
@@ -108,7 +114,7 @@ func (cs *controllerServer) DeleteVolume(ctx context.Context, req *csi.DeleteVol
 	}
 
 	klog.V(4).Infof("Delete volume %s", volID)
-
+	fmt.Printf("Delete volume %s", volID)
 	return &csi.DeleteVolumeResponse{}, nil
 }
 

@@ -42,6 +42,8 @@ func (ns *nodeServer) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstag
 
 func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
 	klog.V(2).Infof("NodePublishVolume called with request %v", *req)
+	fmt.Printf("NodePublishVolume called with request %v", *req)
+
 	if req.GetVolumeCapability() == nil {
 		return nil, status.Error(codes.InvalidArgument, "Volume capability missing in request")
 	}
@@ -60,6 +62,10 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 	//Get Volume
 	volumeID := req.GetVolumeId()
 	client, err := ns.Driver.cloud.SFSV2Client()
+
+	// log by mac
+	klog.V(2).Infof("normal target:%v, ")
+
 	if err != nil {
 		klog.V(3).Infof("NodePublishVolume Failed to create SFS v2 client: %v", err)
 		return nil, status.Error(codes.Internal, err.Error())
@@ -105,12 +111,15 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 		return nil, status.Errorf(codes.Internal, "Could not mount %q at %q: %v", source, target, err)
 	}
 	klog.V(2).Infof("NodePublishVolume: mount %s at %s successfully", source, target)
+	fmt.Printf("NodePublishVolume: mount %s at %s successfully", source, target)
 
 	return &csi.NodePublishVolumeResponse{}, nil
 }
 
 func (ns *nodeServer) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublishVolumeRequest) (*csi.NodeUnpublishVolumeResponse, error) {
 	klog.V(2).Infof("NodeUnPublishVolume: called with args %+v", *req)
+	fmt.Printf("NodeUnPublishVolume: called with args %+v", *req)
+
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
 	}
@@ -126,6 +135,7 @@ func (ns *nodeServer) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpu
 		return nil, status.Errorf(codes.Internal, "failed to unmount target %q: %v", targetPath, err)
 	}
 	klog.V(2).Infof("NodeUnpublishVolume: unmount volume %s on %s successfully", volumeID, targetPath)
+	fmt.Printf("NodeUnpublishVolume: unmount volume %s on %s successfully", volumeID, targetPath)
 
 	return &csi.NodeUnpublishVolumeResponse{}, nil
 }
