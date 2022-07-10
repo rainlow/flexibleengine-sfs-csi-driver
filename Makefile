@@ -26,7 +26,7 @@ sfs:
 .PHONY: sfs-image
 sfs-image:sfs
 	mv ./sfs-csi-plugin ./cmd/sfs-csi-plugin
-	sudo ocker build cmd/sfs-csi-plugin -t registry.eu-west-0.prod-cloud-ocb.orange-business.com/official/sfs-csi-plugin:v1.3.2
+	sudo docker build cmd/sfs-csi-plugin -t registry.eu-west-0.prod-cloud-ocb.orange-business.com/official/sfs-csi-plugin:v1.3.2
 
 .PHONY: fmt
 fmt:
