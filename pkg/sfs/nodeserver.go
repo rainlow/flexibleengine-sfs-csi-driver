@@ -26,10 +26,12 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/klog"
+	mount "k8s.io/mount-utils"
 )
 
 type nodeServer struct {
-	Driver *SfsDriver
+	Driver  *SfsDriver
+	mounter mount.Interface
 }
 
 func (ns *nodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRequest) (*csi.NodeStageVolumeResponse, error) {
@@ -42,8 +44,7 @@ func (ns *nodeServer) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstag
 
 func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
 	klog.V(2).Infof("NodePublishVolume called with request %v", *req)
-	fmt.Printf("NodePublishVolume called with request %v", *req)
-
+	klog.V(2).Infof("-----------------------------------------NodePublishVolume called with request %v --------------------------------------", *req)
 	if req.GetVolumeCapability() == nil {
 		return nil, status.Error(codes.InvalidArgument, "Volume capability missing in request")
 	}
@@ -64,7 +65,7 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 	client, err := ns.Driver.cloud.SFSV2Client()
 
 	// log by mac
-	klog.V(2).Infof("normal target:%v, ")
+	klog.V(2).Infof("------------------------- normal target:%v, %v ---------------", volumeID, target)
 
 	if err != nil {
 		klog.V(3).Infof("NodePublishVolume Failed to create SFS v2 client: %v", err)
@@ -111,14 +112,14 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 		return nil, status.Errorf(codes.Internal, "Could not mount %q at %q: %v", source, target, err)
 	}
 	klog.V(2).Infof("NodePublishVolume: mount %s at %s successfully", source, target)
-	fmt.Printf("NodePublishVolume: mount %s at %s successfully", source, target)
+	klog.V(2).Infof("---------------------------------------------NodePublishVolume: mount %s at %s successfully-----------------------------", source, target)
 
 	return &csi.NodePublishVolumeResponse{}, nil
 }
 
 func (ns *nodeServer) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublishVolumeRequest) (*csi.NodeUnpublishVolumeResponse, error) {
 	klog.V(2).Infof("NodeUnPublishVolume: called with args %+v", *req)
-	fmt.Printf("NodeUnPublishVolume: called with args %+v", *req)
+	klog.V(2).Infof("++++++++++++++++++++++++++++++++++++++++ NodeUnPublishVolume: called with args %+v +++++++++++++++++++++++++++++++++++++++++", *req)
 
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
@@ -130,12 +131,12 @@ func (ns *nodeServer) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpu
 	volumeID := req.GetVolumeId()
 
 	klog.V(2).Infof("NodeUnpublishVolume: unmounting volume %s on %s", volumeID, targetPath)
-	err := Unmount(targetPath)
+	err := mount.CleanupMountPoint(targetPath, ns.mounter, true /*extensiveMountPointCheck*/)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount target %q: %v", targetPath, err)
 	}
 	klog.V(2).Infof("NodeUnpublishVolume: unmount volume %s on %s successfully", volumeID, targetPath)
-	fmt.Printf("NodeUnpublishVolume: unmount volume %s on %s successfully", volumeID, targetPath)
+	klog.V(2).Infof("+++++++++++++++++++++++++++++++++++++++++ NodeUnpublishVolume: unmount volume %s on %s successfully +++++++++++++++++++++++++", volumeID, targetPath)
 
 	return &csi.NodeUnpublishVolumeResponse{}, nil
 }
