@@ -145,7 +145,7 @@ func (ns *nodeServer) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpu
 	}
 	klog.V(2).Infof("NodeUnpublishVolume: unmount volume %s on %s successfully", volumeID, targetPath)
 
-	klog.V(2).Infoln("----------- Node UnPublish Volume over -----------")
+	klog.V(2).Infoln("*********** Node UnPublish Volume over ***********")
 
 	return &csi.NodeUnpublishVolumeResponse{}, nil
 }
