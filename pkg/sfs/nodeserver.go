@@ -26,12 +26,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/klog"
-	mount "k8s.io/mount-utils"
 )
 
 type nodeServer struct {
-	Driver  *SfsDriver
-	mounter mount.Interface
+	Driver *SfsDriver
 }
 
 func (ns *nodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRequest) (*csi.NodeStageVolumeResponse, error) {
@@ -43,8 +41,10 @@ func (ns *nodeServer) NodeUnstageVolume(ctx context.Context, req *csi.NodeUnstag
 }
 
 func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
+	klog.V(2).Infoln("*********** Node Publish Volume begin ***********")
+
 	klog.V(2).Infof("NodePublishVolume called with request %v", *req)
-	klog.V(2).Infof("-----------------------------------------NodePublishVolume called with request %v --------------------------------------", *req)
+
 	if req.GetVolumeCapability() == nil {
 		return nil, status.Error(codes.InvalidArgument, "Volume capability missing in request")
 	}
@@ -65,7 +65,7 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 	client, err := ns.Driver.cloud.SFSV2Client()
 
 	// log by mac
-	klog.V(2).Infof("------------------------- normal target:%v, %v ---------------", volumeID, target)
+	klog.V(2).Infoln("***********", " target:", target, " volumeId:", volumeID, " ***********")
 
 	if err != nil {
 		klog.V(3).Infof("NodePublishVolume Failed to create SFS v2 client: %v", err)
@@ -89,6 +89,8 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 		return nil, status.Error(codes.Internal, fmt.Sprintf("NodePublishVolume Volume %s location not found", volumeID))
 	}
 
+	klog.V(2).Infoln("***********", " source:", source, " ***********")
+
 	mountOptions := "noresvport,nolock"
 	if req.GetReadonly() {
 		mountOptions += ",ro"
@@ -99,10 +101,14 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 		return &csi.NodePublishVolumeResponse{}, nil
 	}
 
+	klog.V(2).Infoln("***********", " creating dir target:", target, " ***********")
+
 	klog.V(2).Infof("NodePublishVolume: creating dir %s", target)
 	if err := makeDir(target); err != nil {
 		return nil, status.Errorf(codes.Internal, "Could not create dir %q: %v", target, err)
 	}
+
+	klog.V(2).Infoln("*********** ", "source:", source, " target:", target, " mountOptions:", mountOptions, " ***********")
 
 	klog.V(2).Infof("NodePublishVolume: mounting %s at %s with mountOptions: %v", source, target, mountOptions)
 	if err := Mount(source, target, mountOptions); err != nil {
@@ -112,14 +118,16 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 		return nil, status.Errorf(codes.Internal, "Could not mount %q at %q: %v", source, target, err)
 	}
 	klog.V(2).Infof("NodePublishVolume: mount %s at %s successfully", source, target)
-	klog.V(2).Infof("---------------------------------------------NodePublishVolume: mount %s at %s successfully-----------------------------", source, target)
+
+	klog.V(2).Infoln("*********** Node Publish Volume over ***********")
 
 	return &csi.NodePublishVolumeResponse{}, nil
 }
 
 func (ns *nodeServer) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpublishVolumeRequest) (*csi.NodeUnpublishVolumeResponse, error) {
+	klog.V(2).Infoln("----------- Node UnPublish Volume begin -----------")
+
 	klog.V(2).Infof("NodeUnPublishVolume: called with args %+v", *req)
-	klog.V(2).Infof("++++++++++++++++++++++++++++++++++++++++ NodeUnPublishVolume: called with args %+v +++++++++++++++++++++++++++++++++++++++++", *req)
 
 	if len(req.GetVolumeId()) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "Volume ID missing in request")
@@ -131,12 +139,13 @@ func (ns *nodeServer) NodeUnpublishVolume(ctx context.Context, req *csi.NodeUnpu
 	volumeID := req.GetVolumeId()
 
 	klog.V(2).Infof("NodeUnpublishVolume: unmounting volume %s on %s", volumeID, targetPath)
-	err := mount.CleanupMountPoint(targetPath, ns.mounter, true /*extensiveMountPointCheck*/)
+	err := Unmount(targetPath)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to unmount target %q: %v", targetPath, err)
 	}
 	klog.V(2).Infof("NodeUnpublishVolume: unmount volume %s on %s successfully", volumeID, targetPath)
-	klog.V(2).Infof("+++++++++++++++++++++++++++++++++++++++++ NodeUnpublishVolume: unmount volume %s on %s successfully +++++++++++++++++++++++++", volumeID, targetPath)
+
+	klog.V(2).Infoln("----------- Node UnPublish Volume over -----------")
 
 	return &csi.NodeUnpublishVolumeResponse{}, nil
 }

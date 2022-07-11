@@ -19,5 +19,4 @@ require (
 	gopkg.in/gcfg.v1 v1.2.3
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	k8s.io/klog v1.0.0
-	k8s.io/mount-utils v0.24.2
 )
